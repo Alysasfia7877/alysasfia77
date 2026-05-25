@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculus in Malaysian Food Security: Rice Yield Optimization</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen p-4 md:p-8">
+
+    <div class="max-w-5xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-100">
+        
+        <div class="bg-gradient-to-r from-emerald-600 to-teal-700 text-white p-6 md:p-8">
+            <span class="bg-emerald-500/30 text-emerald-100 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full">
+                SFM: Food Security & Agricultural Analytics
+            </span>
+            <h1 class="text-2xl md:text-4xl font-extrabold mt-2">Optimizing Rice Production Yields via Derivatives</h1>
+            <p class="text-emerald-100 mt-2 text-sm md:text-base max-w-3xl">
+                Analyzing the marginal efficiency of nitrogen fertilizer application on local MR297 paddy variants in Kedah (The Rice Bowl of Malaysia).
+            </p>
+        </div>
+
+        <div class="p-6 md:p-8 space-y-8">
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 flex flex-col justify-between">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-900 mb-2">The Bioscience Problem</h2>
+                        <p class="text-sm text-slate-600 leading-relaxed">
+                            To ensure national self-sufficiency and food security, Malaysian paddy farmers must maximize grain yield while mitigating chemical runoff. Using a quadratic response model common in crop science, this simulation charts the total yield of MR297 rice based on nitrogen fertilizer inputs.
+                        </p>
+                        <p class="text-sm text-slate-600 mt-2 leading-relaxed">
+                            By utilizing the <strong>first derivative $f'(x)$</strong>, we calculate the <em>marginal yield change</em>. This shows the exact efficiency of every single kilogram of fertilizer added, identifying the point of diminishing returns and the absolute optimal input level to eliminate waste.
+                        </p>
+                    </div>
+                    <div class="mt-4 text-[11px] text-slate-400 italic leading-snug">
+                        <strong>Data Webpage Baseline:</strong> Integrated from MARDI (Malaysian Agricultural Research and Development Institute) Technical Journal papers on "Rice Variety MR297 Fertilizer Interaction" and crop statistics from the Department of Agriculture Malaysia (DOA).
+                    </div>
+                </div>
+
+                <div class="bg-emerald-50/50 p-5 rounded-xl border border-emerald-100 flex flex-col justify-between">
+                    <div>
+                        <h2 class="text-lg font-bold text-emerald-900 mb-3">Mathematical Functions</h2>
+                        
+                        <div class="mb-4">
+                            <span class="block text-xs font-semibold uppercase text-emerald-700">Total Crop Yield Function $f(x)$</span>
+                            <div class="bg-white p-2 rounded border border-emerald-200 font-mono text-sm overflow-x-auto my-1">
+                                f(x) = -0.00018x² + 0.054x + 3.2
+                            </div>
+                            <span class="text-xs text-slate-500 block">Where $x$ = Nitrogen applied ($\text{kg/ha}$), $f(x)$ = Predicted rice yield ($\text{metric tonnes/ha}$).</span>
+                        </div>
+                        
+                        <div>
+                            <span class="block text-xs font-semibold uppercase text-emerald-700">Marginal Efficiency Rate $f'(x)$</span>
+                            <div class="bg-white p-2 rounded border border-emerald-200 font-mono text-sm overflow-x-auto my-1">
+                                f'(x) = -0.00036x + 0.054
+                            </div>
+                            <span class="text-xs text-slate-500 block">Calculates the precise yield increase or decrease per additional $\text{kg}$ of nitrogen applied.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-xl">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <svg class="h-5 w-5 text-amber-600" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm font-medium text-amber-800">
+                          <strong>Interactive Inspection:</strong> Click on any segment of the curve below to run a localized calculus evaluation at that input level.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="relative bg-white p-4 rounded-xl border border-slate-200 shadow-inner h-[380px]">
+                <canvas id="yieldChart"></canvas>
+            </div>
+
+            <div id="outputPanel" class="bg-slate-900 text-white p-6 rounded-xl shadow-md transition-all duration-300 transform scale-100 opacity-100 hidden">
+                <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-700 pb-4 mb-4">
+                    <div>
+                        <h3 class="text-emerald-400 font-bold text-lg uppercase tracking-wide">Calculus Inspection Panel</h3>
+                        <p class="text-slate-400 text-xs">Dynamic derivative calculation from your click event</p>
+                    </div>
+                    <div class="mt-2 md:mt-0 bg-slate-800 px-4 py-2 rounded-lg border border-slate-700">
+                        <span class="text-slate-400 text-sm">Inspected Input:</span>
+                        <span id="displayX" class="font-bold text-white text-lg ml-1">0 kg/ha</span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-4">
+                        <div>
+                            <span class="text-xs text-slate-400 block uppercase tracking-wider">Total Output Yield [$f(x)$]</span>
+                            <div class="text-3xl font-extrabold text-white" id="valFx">0.00 tonnes/ha</div>
+                        </div>
+                        <div>
+                            <span class="text-xs text-emerald-400 block uppercase tracking-wider">Marginal Efficiency Rate [$f'(x)$]</span>
+                            <div class="text-3xl font-extrabold text-teal-300" id="valFprimeX">0.0000 tonnes / kg</div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 flex flex-col justify-center">
+                        <span class="text-xs text-amber-400 font-bold uppercase tracking-wider mb-1">📋 Layman Breakdown</span>
+                        <p id="laymanExplanation" class="text-slate-200 text-sm leading-relaxed">
+                            Click on the graph to display how your fertilizer investment shifts performance!
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('yieldChart').getContext('2d');
+
+        // 1. Core Calculus Math Models
+        function f(x) {
+            return -0.00018 * Math.pow(x, 2) + 0.054 * x + 3.2;
+        }
+
+        function fPrime(x) {
+            return -0.00036 * x + 0.054;
+        }
+
+        // 2. Map curve data arrays (X values from 0 to 220 kg/ha of Nitrogen)
+        const labels = [];
+        const dataPoints = [];
+        for (let x = 0; x <= 220; x += 5) {
+            labels.push(x);
+            dataPoints.push(f(x));
+        }
+
+        // 3. Custom Tracking Line Plugin Configuration
+        const visualTracker = {
+            id: 'visualTracker',
+            afterDraw: (chart) => {
+                if (chart.config.options.plugins.trackerPositionX !== undefined) {
+                    const xVal = chart.config.options.plugins.trackerPositionX;
+                    const xAxis = chart.scales.x;
+                    const yAxis = chart.scales.y;
+                    const xPixel = xAxis.getPixelForValue(xVal);
+
+                    ctx.save();
+                    ctx.canvas.style.cursor = 'pointer';
+                    ctx.beginPath();
+                    ctx.moveTo(xPixel, yAxis.top);
+                    ctx.lineTo(xPixel, yAxis.bottom);
+                    ctx.lineWidth = 2;
+                    ctx.strokeStyle = '#f59e0b'; // Amber Line indicator
+                    ctx.setLineDash([5, 5]);
+                    ctx.stroke();
+                    ctx.restore();
+                }
+            }
+        };
+        Chart.register(visualTracker);
+
+        // 4. Initialize Interactive Chart.js Blueprint
+        const yieldChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'MR297 Rice Yield Target Profile',
+                    data: dataPoints,
+                    borderColor: '#059669', // Emerald
+                    backgroundColor: 'rgba(5, 150, 105, 0.04)',
+                    borderWidth: 3,
+                    pointRadius: 0, 
+                    hoverRadius: 6,
+                    fill: true,
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: {
+                    duration: 1400,
+                    easing: 'easeOutQuart'
+                },
+                scales: {
+                    x: {
+                        title: { display: true, text: 'Nitrogen Fertilizer Applied (kg/hectare)', font: { weight: 'bold' } },
+                        grid: { color: '#f1f5f9' }
+                    },
+                    y: {
+                        min: 3,
+                        max: 8,
+                        title: { display: true, text: 'Paddy Crop Yield (Metric Tonnes/Hectare)', font: { weight: 'bold' } },
+                        grid: { color: '#f1f5f9' }
+                    }
+                },
+                plugins: {
+                    legend: { display: true }
+                },
+                onClick: (event, elements, chartInstance) => {
+                    const canvasPosition = Chart.helpers.getRelativePosition(event, chartInstance);
+                    const rawX = chartInstance.scales.x.getValueForPixel(canvasPosition.x);
+                    
+                    // Clamp values to valid experimental domain bounds
+                    let targetedX = Math.min(Math.max(rawX, 0), 220);
+                    targetedX = Math.round(targetedX); // Clean integer steps
+
+                    const currentYield = f(targetedX);
+                    const currentDerivative = fPrime(targetedX);
+
+                    // Update structural rendering variables
+                    chartInstance.config.options.plugins.trackerPositionX = targetedX;
+                    chartInstance.update('none');
+
+                    renderOutputPanel(targetedX, currentYield, currentDerivative);
+                }
+            }
+        });
+
+        // 5. Dynamic Layman Translation Analysis Block
+        function renderOutputPanel(x, fx, fPrimeX) {
+            const panel = document.getElementById('outputPanel');
+            panel.classList.remove('hidden');
+
+            document.getElementById('displayX').innerText = `${x} kg/ha`;
+            document.getElementById('valFx').innerText = `${fx.toFixed(2)} tonnes/ha`;
+            
+            // Format derivative readability
+            const formattedDerivative = fPrimeX.toFixed(4);
+            const derivativeTextElement = document.getElementById('valFprimeX');
+            derivativeTextElement.innerText = `${fPrimeX >= 0 ? '+' : ''}${formattedDerivative} t/kg`;
+
+            let explanation = "";
+
+            if (x === 150) {
+                derivativeTextElement.className = "text-3xl font-extrabold text-emerald-400";
+                explanation = `🎯 <strong>Optimal Efficiency Point!</strong> The derivative $f'(x)$ is exactly <strong>0.0000</strong>. At $150\\text{ kg/ha}$, you have maximized your food security target output. Adding more fertilizer past this point will yield absolutely zero extra growth and waste money.`;
+            } else if (fPrimeX > 0) {
+                derivativeTextElement.className = "text-3xl font-extrabold text-teal-300";
+                if (x < 75) {
+                    explanation = `🚀 <strong>High Efficiency Phase:</strong> The rate of return is heavily positive ($+${formattedDerivative}$ tonnes/kg). The crop is hungry for nutrients; adding more nitrogen right now significantly spikes total yield.`;
+                } else {
+                    explanation = `⚠️ <strong>Diminishing Returns Phase:</strong> The derivative is still positive ($+${formattedDerivative}$ tonnes/kg), but dropping closer to zero. Every extra bag of fertilizer helps, but provides less growth momentum than earlier applications.`;
+                }
+            } else {
+                derivativeTextElement.className = "text-3xl font-extrabold text-rose-400";
+                explanation = `🛑 <strong>Toxic Over-Fertilization Phase:</strong> The derivative has turned negative (<strong>${formattedDerivative}</strong> tonnes/kg). Excess nitrogen is burning the crop roots and leaking toxins into local waterways, causing yields to actually collapse.`;
+            }
+
+            document.getElementById('laymanExplanation').innerHTML = explanation;
+        }
+    </script>
+</body>
+</html>
